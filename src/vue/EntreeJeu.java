@@ -12,29 +12,28 @@ import java.awt.SystemColor;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import controleur.Controle;
 
 public class EntreeJeu extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtfldIP;
+	private Controle controle;
+	
 
 	/**
 	 * méthode pour le bouton btnStart
 	 */
 	private void btnStart_Click() {
-		this.dispose();
-		Arene frmArene = new Arene();
-		frmArene.setVisible(true);
+		controle.evenementEntreeJeu("serveur");
 	}
 	
 	/**
 	 * méthode pour le bouton btnConnect
 	 */
 	private void btnConnect_Click() {
-		this.dispose();
-		ChoixJoueur frmChoixJoueur = new ChoixJoueur();
-		frmChoixJoueur.setVisible(true);
+		controle.evenementEntreeJeu(txtfldIP.getText());
 	}
 	
 	/**
@@ -47,7 +46,7 @@ public class EntreeJeu extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public EntreeJeu() {
+	public EntreeJeu(Controle controle) {
 		setTitle("Urban Marginal");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 344, 199);
@@ -115,5 +114,7 @@ public class EntreeJeu extends JFrame {
 		txtfldIP.setBounds(70, 97, 115, 20);
 		contentPane.add(txtfldIP);
 		txtfldIP.setColumns(10);
+		
+		this.controle = controle;
 	}
 }
