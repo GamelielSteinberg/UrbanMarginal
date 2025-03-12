@@ -25,7 +25,7 @@ public class Controle implements AsyncResponse {
 	 * @param info
 	 */
 	public void evenementEntreeJeu(String info) {
-		if (info == "serveur") {
+		if (info.equals("serveur")) {
 			typeJeu = "serveur";
 			ServeurSocket serveurSocket = new ServeurSocket(this, PORT);
 			frmEntreeJeu.dispose();
@@ -35,6 +35,11 @@ public class Controle implements AsyncResponse {
 			typeJeu = "client";
 			ClientSocket clientSocket = new ClientSocket(this, info, PORT);
 		}
+	}
+	
+	public void evenementChoixJoueur(int num_perso, String pseudo) {
+		frmChoixJoueur.dispose();
+		frmArene.setVisible(true);
 	}
 
 	/**
@@ -50,9 +55,9 @@ public class Controle implements AsyncResponse {
 	public void reception(Connection connection, String ordre, Object info) {
 		switch (ordre) {
 		case ("connexion"):
-			if (typeJeu == "client") {
+			if (typeJeu.equals("client")) {
 				frmEntreeJeu.dispose();
-				frmChoixJoueur = new ChoixJoueur();
+				frmChoixJoueur = new ChoixJoueur(this);
 				frmArene = new Arene();
 				frmChoixJoueur.setVisible(true);
 			}
