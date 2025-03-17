@@ -16,8 +16,9 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import controleur.Controle;
+import controleur.Global;
 
-public class ChoixJoueur extends JFrame {
+public class ChoixJoueur extends JFrame implements Global {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -25,7 +26,6 @@ public class ChoixJoueur extends JFrame {
 	JLabel lblPersonnage;
 	private Controle controle;
 	private int num_perso;
-	private static int NOMBREPERSOS = 3;
 
 	/**
 	 * méthode pour le label gauche
@@ -68,7 +68,7 @@ public class ChoixJoueur extends JFrame {
 	 * méthode pour afficher le personnage
 	 */
 	private void affichePerso() {
-		ImageIcon imagePerso = new ImageIcon(getClass().getResource("/personnages/perso" + num_perso + "marche1d1.gif"));
+		ImageIcon imagePerso = new ImageIcon(getClass().getResource(CHEMINPERSOS + num_perso + "marche1d1.gif"));
 		lblPersonnage.setIcon(imagePerso);
 	}
 	
@@ -168,7 +168,7 @@ public class ChoixJoueur extends JFrame {
 		contentPane.add(lblGo);
 
 		// Affichage de l'image de fond
-		ImageIcon imageFond = new ImageIcon(getClass().getResource("/fonds/fondchoix.jpg"));
+		ImageIcon imageFond = new ImageIcon(getClass().getResource(FONDCHOIX));
 		JLabel lblFond = new JLabel();
 		lblFond.setIcon(imageFond);
 		lblFond.setBounds(0, 0, 400, 275);

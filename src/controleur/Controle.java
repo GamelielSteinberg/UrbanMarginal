@@ -2,14 +2,15 @@ package controleur;
 
 import vue.*;
 import outils.connexion.*;
+import modele.*;
+import controleur.Global;
 
-public class Controle implements AsyncResponse {
+public class Controle implements AsyncResponse, Global {
 
 	private EntreeJeu frmEntreeJeu;
 	private Arene frmArene;
 	private ChoixJoueur frmChoixJoueur;
-	private String typeJeu;
-	private static int PORT = 6666;
+	private Jeu leJeu;
 	
 	/**
 	 * Constructeur
@@ -26,13 +27,12 @@ public class Controle implements AsyncResponse {
 	 */
 	public void evenementEntreeJeu(String info) {
 		if (info.equals("serveur")) {
-			typeJeu = "serveur";
 			ServeurSocket serveurSocket = new ServeurSocket(this, PORT);
+			leJeu = new JeuServeur(this);
 			frmEntreeJeu.dispose();
 			Arene frmArene = new Arene();
 			frmArene.setVisible(true);
 		} else {
-			typeJeu = "client";
 			ClientSocket clientSocket = new ClientSocket(this, info, PORT);
 		}
 	}
@@ -40,6 +40,7 @@ public class Controle implements AsyncResponse {
 	public void evenementChoixJoueur(int num_perso, String pseudo) {
 		frmChoixJoueur.dispose();
 		frmArene.setVisible(true);
+		((JeuClient)leJeu).envoi(SIGNATUREPSEUDO + SEPARATEUR + pseudo + SEPARATEUR + num_perso);
 	}
 
 	/**
@@ -54,21 +55,35 @@ public class Controle implements AsyncResponse {
 	@Override
 	public void reception(Connection connection, String ordre, Object info) {
 		switch (ordre) {
-		case ("connexion"):
-			if (typeJeu.equals("client")) {
+		case (ORDRECONNEXION):
+			if (!(leJeu instanceof JeuServeur)) {
+				leJeu = new JeuClient(this);
+				leJeu.connexion(connection);
 				frmEntreeJeu.dispose();
 				frmChoixJoueur = new ChoixJoueur(this);
 				frmArene = new Arene();
 				frmChoixJoueur.setVisible(true);
 			}
+			else {
+				leJeu.connexion(connection);
+			}
 			break;
-		case ("reception"):
-			
+		case (ORDRERECEPTION):
+			leJeu.reception(connection, info);			
 			break;
-		case ("déconnexion"):
+		case (ORDREDECONNEXION):
 			
 			break;
 		}
+	}
+	
+	/**
+	 * méthode pour communiquer une information à un Jeu
+	 * @param connection
+	 * @param info
+	 */
+	public void envoi(Connection connection, Object info) {
+		connection.envoi(info);
 	}
 
 }

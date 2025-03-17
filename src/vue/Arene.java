@@ -2,7 +2,6 @@ package vue;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
-
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -11,8 +10,9 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
+import controleur.Global;
 
-public class Arene extends JFrame {
+public class Arene extends JFrame implements Global {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -34,7 +34,7 @@ public class Arene extends JFrame {
 		contentPane.setLayout(null);
 
 		
-		ImageIcon imageFond = new ImageIcon(getClass().getResource("/fonds/fondarene.jpg"));
+		ImageIcon imageFond = new ImageIcon(getClass().getResource(FONDARENE));
 		JLabel lblFond = new JLabel();
 		lblFond.setIcon(imageFond);
 		lblFond.setBounds(0, 0, 800, 600);
