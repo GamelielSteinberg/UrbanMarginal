@@ -106,6 +106,7 @@ public class ChoixJoueur extends JFrame implements Global {
 
 		// Creation du textField pour le pseudo
 		txtfldPseudo = new JTextField();
+		txtfldPseudo.setHorizontalAlignment(SwingConstants.CENTER);
 		txtfldPseudo.setBounds(140, 245, 122, 20);
 		contentPane.add(txtfldPseudo);
 		txtfldPseudo.setColumns(10);

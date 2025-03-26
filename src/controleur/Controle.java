@@ -3,7 +3,8 @@ package controleur;
 import vue.*;
 import outils.connexion.*;
 import modele.*;
-import controleur.Global;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
 
 public class Controle implements AsyncResponse, Global {
 
@@ -27,20 +28,49 @@ public class Controle implements AsyncResponse, Global {
 	 */
 	public void evenementEntreeJeu(String info) {
 		if (info.equals("serveur")) {
-			ServeurSocket serveurSocket = new ServeurSocket(this, PORT);
+			new ServeurSocket(this, PORT);
 			leJeu = new JeuServeur(this);
 			frmEntreeJeu.dispose();
-			Arene frmArene = new Arene();
+			frmArene = new Arene();
+			((JeuServeur) leJeu).constructionMurs();
 			frmArene.setVisible(true);
 		} else {
-			ClientSocket clientSocket = new ClientSocket(this, info, PORT);
+			new ClientSocket(this, info, PORT);
 		}
 	}
 	
 	public void evenementChoixJoueur(int num_perso, String pseudo) {
+		((JeuClient)this.leJeu).envoi(SIGNATUREPSEUDO + SEPARATEUR + pseudo + SEPARATEUR + num_perso);
 		frmChoixJoueur.dispose();
 		frmArene.setVisible(true);
-		((JeuClient)leJeu).envoi(SIGNATUREPSEUDO + SEPARATEUR + pseudo + SEPARATEUR + num_perso);
+	}
+	
+	public void evenementJeuServeur(String ordre, Object info) {
+		switch (ordre) {
+		case (AJOUTMUR):
+			frmArene.ajoutMurs(info);
+			break;
+		case (AJOUTPANELMURS):
+			leJeu.envoi((Connection)info, frmArene.getjpnMurs());
+			break;
+		case (AJOUTLBLJEU):
+			frmArene.ajoutJLabelJeu((JLabel)info);
+			break;
+		case (AJOUTPANELJEU):
+			leJeu.envoi((Connection)info, frmArene.getjpnJeu());
+			break;
+		}
+	}
+	
+	public void evenementJeuClient(String ordre, Object info) {
+		switch (ordre) {
+		case (AJOUTPANELMURS):
+			frmArene.setjpnMurs((JPanel)info);
+			break;
+		case (AJOUTPANELJEU):
+			frmArene.setjpnJeu((JPanel)info);
+			break;
+		}
 	}
 
 	/**
@@ -55,7 +85,7 @@ public class Controle implements AsyncResponse, Global {
 	@Override
 	public void reception(Connection connection, String ordre, Object info) {
 		switch (ordre) {
-		case (ORDRECONNEXION):
+		case (CONNEXION):
 			if (!(leJeu instanceof JeuServeur)) {
 				leJeu = new JeuClient(this);
 				leJeu.connexion(connection);
@@ -68,10 +98,10 @@ public class Controle implements AsyncResponse, Global {
 				leJeu.connexion(connection);
 			}
 			break;
-		case (ORDRERECEPTION):
+		case (RECEPTION):
 			leJeu.reception(connection, info);			
 			break;
-		case (ORDREDECONNEXION):
+		case (DECONNEXION):
 			
 			break;
 		}

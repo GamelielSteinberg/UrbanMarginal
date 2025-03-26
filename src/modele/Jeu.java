@@ -30,7 +30,7 @@ public abstract class Jeu {
 	 * Envoi d'une information vers un ordinateur distant
 	 */
 	public void envoi(Connection connection, Object info) {
-		controle.envoi(connection, info);
+		this.controle.envoi(connection, info);
 	}
 	
 }
