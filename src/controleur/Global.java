@@ -34,9 +34,17 @@ public interface Global {
 	 */
 	public static final String SEPARATEUR = "~";
 	/**
+	 * séparateur tchat
+	 */
+	String SEPARATEURCHAT = " > ";
+	/**
 	 * signature pseudo
 	 */
 	public static final String SIGNATUREPSEUDO = "pseudo";
+	/**
+	 * signature ordre envoi message tchat
+	 */
+	String SIGNATURECHAT = "tchat";
 	/**
 	 * message pour l'ordre de connexion
 	 */
@@ -65,6 +73,18 @@ public interface Global {
 	 * message pour l'ordre d'ajout du panel des joueurs
 	 */
 	String AJOUTPANELJEU = "ajout panel jeu";
+	/**
+	 * message pour l'envoi d'un texte dans  le chat
+	 */
+	String VALIDATIONSAISIE = "validation saisie entree chat";
+	/**
+	 * message pour l'ordre d'ajout d'une phrase dans le tchat
+	 */
+	String AJOUTPHRASE = "ajout phrase";
+	/**
+	 * message pour l'ordre de modifier le chat d'un jeu en particulier
+	 */
+	String MODIFCHAT = "modif tchat";
 	/**
 	 * numéro du port
 	 */

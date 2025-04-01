@@ -49,7 +49,13 @@ public class Joueur extends Objet implements Global {
 	 * label pour le texte sous le joueur
 	 */
 	private JLabel message;
-
+	/**
+	 * getter sur pseudo
+	 * @return
+	 */
+	public String getPseudo() {
+		return pseudo;
+	}
 	/**
 	 * Constructeur
 	 */

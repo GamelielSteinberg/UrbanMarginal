@@ -21,7 +21,6 @@ public class JeuServeur extends Jeu implements Global {
 	 * Dictionnaire de joueurs et leur connexion
 	 */
 	private Hashtable<Connection, Joueur> lesJoueurs = new Hashtable<Connection, Joueur>();
-
 	/**
 	 * Constructeur
 	 */
@@ -43,6 +42,13 @@ public class JeuServeur extends Jeu implements Global {
 			String pseudo = infoArray[1];
 			int numPerso = Integer.parseInt(infoArray[2]);
 			this.lesJoueurs.get(connection).initPerso(pseudo, numPerso, lesMurs, lesJoueurs.values());
+			String messageConnexion = "***" + pseudo + " vient de se connecter***";
+			controle.evenementJeuServeur(AJOUTPHRASE, messageConnexion);
+			break;
+		case (SIGNATURECHAT):
+			String pseudoChat = lesJoueurs.get(connection).getPseudo();
+			String aEnvoyer = pseudoChat + SEPARATEURCHAT + infoArray[1];
+			controle.evenementJeuServeur(AJOUTPHRASE, aEnvoyer);
 			break;
 		}
 	}
@@ -55,7 +61,10 @@ public class JeuServeur extends Jeu implements Global {
 	 * Envoi d'une information vers tous les clients fais appel plusieurs fois à
 	 * l'envoi de la classe Jeu
 	 */
-	public void envoi() {
+	public void envoi(Object info) {
+		for (Connection uneConnection : lesJoueurs.keySet()) {
+			super.envoi(uneConnection, info);
+		}
 	}
 
 	/**
