@@ -14,9 +14,14 @@ public interface Global {
 	 */
 	public static final int PERTE = 2 ;
 	/**
+	 * nombre de pixels parcourus par déplacement
+	 */
+	public static final int PAS = 10;
+	/**
 	 * nombre de personnages différents
 	 */
 	public static final int NOMBREPERSOS = 3;
+	public static final int NOMBREETAPESMARCHE = 4;
 	/**
 	 * chemin vers le fond de ChoixJoueur
 	 */
@@ -85,6 +90,10 @@ public interface Global {
 	 * message pour l'ordre de modifier le chat d'un jeu en particulier
 	 */
 	String MODIFCHAT = "modif tchat";
+	/**
+	 * message pour l'ordre d'appliquer une action à un joueur
+	 */
+	String ACTION = "action";
 	/**
 	 * numéro du port
 	 */

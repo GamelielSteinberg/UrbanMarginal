@@ -13,7 +13,7 @@ import javax.swing.JLabel;
  *
  */
 public class Mur extends Objet implements Global {
-	private JLabel jLabel;
+	//private JLabel jLabel;
 
 	/**
 	 * Constructeur

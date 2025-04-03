@@ -12,7 +12,7 @@ public class Controle implements AsyncResponse, Global {
 	private Arene frmArene;
 	private ChoixJoueur frmChoixJoueur;
 	private Jeu leJeu;
-	
+
 	/**
 	 * Constructeur
 	 */
@@ -38,53 +38,54 @@ public class Controle implements AsyncResponse, Global {
 			new ClientSocket(this, info, PORT);
 		}
 	}
-	
+
 	public void evenementChoixJoueur(int num_perso, String pseudo) {
-		((JeuClient)this.leJeu).envoi(SIGNATUREPSEUDO + SEPARATEUR + pseudo + SEPARATEUR + num_perso);
+		((JeuClient) this.leJeu).envoi(SIGNATUREPSEUDO + SEPARATEUR + pseudo + SEPARATEUR + num_perso);
 		frmChoixJoueur.dispose();
 		frmArene.setVisible(true);
 	}
-	
+
 	public void evenementJeuServeur(String ordre, Object info) {
 		switch (ordre) {
 		case (AJOUTMUR):
 			frmArene.ajoutMurs(info);
 			break;
 		case (AJOUTPANELMURS):
-			leJeu.envoi((Connection)info, frmArene.getjpnMurs());
+			leJeu.envoi((Connection) info, frmArene.getjpnMurs());
 			break;
 		case (AJOUTLBLJEU):
-			frmArene.ajoutJLabelJeu((JLabel)info);
+			frmArene.ajoutJLabelJeu((JLabel) info);
 			break;
 		case (AJOUTPANELJEU):
-			leJeu.envoi((Connection)info, frmArene.getjpnJeu());
+			leJeu.envoi((Connection) info, frmArene.getjpnJeu());
 			break;
 		case (AJOUTPHRASE):
-			frmArene.ajoutChat((String)info);
-			((JeuServeur)leJeu).envoi(frmArene.gettxtChat());
+			frmArene.ajoutChat((String) info);
+			((JeuServeur) leJeu).envoi(frmArene.gettxtChat());
 			break;
 		}
 	}
-	
+
 	public void evenementJeuClient(String ordre, Object info) {
 		switch (ordre) {
 		case (AJOUTPANELMURS):
-			frmArene.setjpnMurs((JPanel)info);
+			frmArene.setjpnMurs((JPanel) info);
 			break;
 		case (AJOUTPANELJEU):
-			frmArene.setjpnJeu((JPanel)info);
+			frmArene.setjpnJeu((JPanel) info);
 			break;
 		case (MODIFCHAT):
-			frmArene.settxtChat((String)info);
+			frmArene.settxtChat((String) info);
 			break;
 		}
 	}
-	
-	public void evenementArene(String ordre, Object info) {
-		switch (ordre) {
-		case (VALIDATIONSAISIE):
-			((JeuClient)leJeu).envoi(SIGNATURECHAT + SEPARATEUR + info);
-			break;
+
+	public void evenementArene(Object info) {
+		if (info instanceof String) {
+			((JeuClient) leJeu).envoi(SIGNATURECHAT + SEPARATEUR + info);
+		}
+		if (info instanceof Integer) {
+			((JeuClient) leJeu).envoi(ACTION + SEPARATEUR + info);
 		}
 	}
 
@@ -108,22 +109,22 @@ public class Controle implements AsyncResponse, Global {
 				frmChoixJoueur = new ChoixJoueur(this);
 				frmArene = new Arene(this, true);
 				frmChoixJoueur.setVisible(true);
-			}
-			else {
+			} else {
 				leJeu.connexion(connection);
 			}
 			break;
 		case (RECEPTION):
-			leJeu.reception(connection, info);			
+			leJeu.reception(connection, info);
 			break;
 		case (DECONNEXION):
-			
+
 			break;
 		}
 	}
-	
+
 	/**
 	 * méthode pour communiquer une information à un Jeu
+	 * 
 	 * @param connection
 	 * @param info
 	 */

@@ -29,6 +29,7 @@ public class Arene extends JFrame implements Global {
 
 	/**
 	 * méthode permettant l'affichage des murs
+	 * 
 	 * @param mur
 	 */
 	public void ajoutMurs(Object mur) {
@@ -39,6 +40,7 @@ public class Arene extends JFrame implements Global {
 
 	/**
 	 * getter jpnMurs
+	 * 
 	 * @return
 	 */
 	public JPanel getjpnMurs() {
@@ -85,6 +87,7 @@ public class Arene extends JFrame implements Global {
 		this.jpnJeu.removeAll();
 		this.jpnJeu.add(jpnJeu);
 		this.jpnJeu.repaint();
+		contentPane.requestFocus();
 	}
 
 	/**
@@ -105,24 +108,29 @@ public class Arene extends JFrame implements Global {
 		this.txtareaChatHistory.setText(txt);
 		this.txtareaChatHistory.setCaretPosition(this.txtareaChatHistory.getDocument().getLength());
 	}
+
 	/**
 	 * méthode permettant de remplacer l'historique du chat
+	 * 
 	 * @param txt
 	 */
 	public void ajoutChat(String txt) {
 		this.txtareaChatHistory.append(txt + "\r\n");
 		this.txtareaChatHistory.setCaretPosition(this.txtareaChatHistory.getDocument().getLength());
 	}
+
 	/**
 	 * méthode activée lors de la validation de la saisie d'un texte non vide
 	 */
 	private void validationSaisie() {
-		controle.evenementArene(VALIDATIONSAISIE, txtfldChatEntree.getText());
+		controle.evenementArene(txtfldChatEntree.getText());
 		txtfldChatEntree.setText("");
+		contentPane.requestFocus();
 	}
 
 	/**
 	 * Create the frame
+	 * 
 	 * @param controle
 	 * @param isClient
 	 */
@@ -182,8 +190,31 @@ public class Arene extends JFrame implements Global {
 			});
 			scrollPane.setColumnHeaderView(txtfldChatEntree);
 			txtfldChatEntree.setColumns(10);
+			contentPane.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyPressed(KeyEvent e) {
+					keyPressedDeplacement(e);
+				}
+			});
+			txtareaChatHistory.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyPressed(KeyEvent e) {
+					keyPressedDeplacement(e);
+				}
+			});
 		}
 
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+	}
+
+	private void keyPressedDeplacement(KeyEvent e) {
+		int direction;
+		if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT
+				|| e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
+			direction = e.getKeyCode();
+			controle.evenementArene(direction);
+		} else {
+			direction = -1;
+		}
 	}
 }

@@ -10,6 +10,7 @@ import javax.swing.SwingConstants;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.KeyEvent;
 
 /**
  * Gestion des joueurs
@@ -49,13 +50,16 @@ public class Joueur extends Objet implements Global {
 	 * label pour le texte sous le joueur
 	 */
 	private JLabel message;
+
 	/**
 	 * getter sur pseudo
+	 * 
 	 * @return
 	 */
 	public String getPseudo() {
 		return pseudo;
 	}
+
 	/**
 	 * Constructeur
 	 */
@@ -89,6 +93,8 @@ public class Joueur extends Objet implements Global {
 	/**
 	 * Calcul de la première position aléatoire du joueur (sans chevaucher un autre
 	 * joueur ou un mur)
+	 * @param lesMurs
+	 * @param lesJoueurs
 	 */
 	private void premierePosition(ArrayList<Mur> lesMurs, Collection<Joueur> lesJoueurs) {
 		jLabel.setBounds(0, 0, LARGEURPERSO, HAUTEURPERSO);
@@ -100,12 +106,15 @@ public class Joueur extends Objet implements Global {
 
 	/**
 	 * Affiche le personnage et son message
+	 * @param etat
+	 * @param etape
 	 */
 	public void affiche(String etat, int etape) {
-		ImageIcon imagePerso = new ImageIcon(getClass().getResource(CHEMINPERSOS + numPerso + "marche" + etape + "d" + orientation + ".gif"));
+		ImageIcon imagePerso = new ImageIcon(
+				getClass().getResource(CHEMINPERSOS + numPerso + "marche" + etape + "d" + orientation + ".gif"));
 		int largeur = imagePerso.getIconWidth();
 		int hauteur = imagePerso.getIconHeight();
-		jLabel.setBounds(posX, posY, largeur, hauteur);//posX + largeur, posY + hauteur);
+		jLabel.setBounds(posX, posY, largeur, hauteur);// posX + largeur, posY + hauteur);
 		jLabel.setIcon(imagePerso);
 		message.setBounds(posX - 10, posY + hauteur + 1, largeur + 20, 8);
 		message.setText(pseudo + ": " + vie);
@@ -114,14 +123,62 @@ public class Joueur extends Objet implements Global {
 
 	/**
 	 * Gère une action reçue et qu'il faut afficher (déplacement, tire de boule...)
+	 * @param mouvement
+	 * @param lesJoueurs
+	 * @param lesMurs
 	 */
-	public void action() {
+	public void action(int mouvement, Collection<Joueur> lesJoueurs, ArrayList<Mur> lesMurs) {
+		switch (mouvement) {
+		case (KeyEvent.VK_LEFT):
+			this.posX -= PAS;
+			if (isInvalid(lesJoueurs, lesMurs)) {
+				this.posX += PAS;
+			}
+			break;
+		case (KeyEvent.VK_RIGHT):
+			this.posX += PAS;
+			if (isInvalid(lesJoueurs, lesMurs)) {
+				this.posX -= PAS;
+			}
+			break;
+		case (KeyEvent.VK_UP):
+			this.posY -= PAS;
+			if (isInvalid(lesJoueurs, lesMurs)) {
+				this.posY += PAS;
+			}
+			break;
+		case (KeyEvent.VK_DOWN):
+			this.posY += PAS;
+			if (isInvalid(lesJoueurs, lesMurs)) {
+				this.posY -= PAS;
+			}
+			break;
+		}
+		deplace(mouvement);
+		affiche("marche", etape);
 	}
 
 	/**
 	 * Gère le déplacement du personnage
 	 */
-	private void deplace() {
+	private void deplace(int mouvement) {
+		etape += 1;
+		if (etape > NOMBREETAPESMARCHE) {
+			etape = 1;
+		}
+		if ((orientation == 0 && mouvement == KeyEvent.VK_RIGHT)
+				|| (orientation == 1 && mouvement == KeyEvent.VK_LEFT)) {
+			orientation = Math.abs(orientation - 1);
+		}
+	}
+
+	private boolean isInvalid(Collection<Joueur> lesJoueurs, ArrayList<Mur> lesMurs) {
+		if (toucheJoueur(lesJoueurs) || toucheMur(lesMurs) || this.posX < 0 || this.posY < 0
+				|| (this.posX + this.jLabel.getWidth()) > LARGEURARENE
+				|| (this.posY + this.jLabel.getHeight() > HAUTEURARENE)) {
+			return true;
+		}
+		return false;
 	}
 
 	/**

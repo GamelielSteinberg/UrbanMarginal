@@ -50,6 +50,10 @@ public class JeuServeur extends Jeu implements Global {
 			String aEnvoyer = pseudoChat + SEPARATEURCHAT + infoArray[1];
 			controle.evenementJeuServeur(AJOUTPHRASE, aEnvoyer);
 			break;
+		case (ACTION):
+			Joueur leJoueur = lesJoueurs.get(connection);
+			leJoueur.action(Integer.parseInt(infoArray[1]), lesJoueurs.values(), lesMurs);
+			break;
 		}
 	}
 
