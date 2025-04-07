@@ -53,6 +53,7 @@ public class Boule extends Objet implements Global, Runnable {
 	}
 
 	public void run() {
+		jeuServeur.envoi(NUMFIGHT);;
 		this.joueurAttaquant.affiche(MARCHE, 1);
 		super.jLabel.setVisible(true);
 		Joueur victime = null;
@@ -80,7 +81,10 @@ public class Boule extends Objet implements Global, Runnable {
 				for (int i = 1; i < 3; i++) {
 					victime.affiche(MORT, i);
 					pause(80, 0);
+					jeuServeur.envoi(NUMDEATH);
 				}
+			}else {
+				jeuServeur.envoi(NUMHURT);
 			}
 		}
 		super.jLabel.setVisible(false);

@@ -99,6 +99,10 @@ public interface Global {
 	 */
 	String ACTION = "action";
 	/**
+	 * message pour l'ordre de jouer un son
+	 */
+	String SON = "son";
+	/**
 	 * numéro du port
 	 */
 	public static final int PORT = 6666;
@@ -138,4 +142,18 @@ public interface Global {
 	String MARCHE = "marche";
 	String TOUCHE = "touche";
 	String MORT = "mort";
+	/**
+	 * chemins vers les sons de ChoixJoueur
+	 */
+	String SONWELCOME = "/sons/welcome.wav";
+	String SONPRECEDENT = "/sons/precedent.wav";
+	String SONSUIVANT = "/sons/suivant.wav";
+	String SONGO = "/sons/go.wav";
+	/**
+	 * chemins vers les sons de l'Arene
+	 */
+	String[] TABLEAUSONSARENE = {"/sons/fight.wav", "/sons/hurt.wav", "/sons/death.wav"};
+	Integer NUMFIGHT = 0;
+	Integer NUMHURT = 1;
+	Integer NUMDEATH = 2;
 }

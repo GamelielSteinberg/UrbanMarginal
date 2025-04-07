@@ -17,6 +17,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import controleur.Controle;
 import controleur.Global;
+import outils.son.Son;
 
 public class ChoixJoueur extends JFrame implements Global {
 
@@ -26,6 +27,7 @@ public class ChoixJoueur extends JFrame implements Global {
 	JLabel lblPersonnage;
 	private Controle controle;
 	private int num_perso;
+	private Son welcome, precedent, suivant, go;
 
 	/**
 	 * méthode pour le label gauche
@@ -36,6 +38,7 @@ public class ChoixJoueur extends JFrame implements Global {
 			num_perso = NOMBREPERSOS;
 		}
 		affichePerso();
+		precedent.play();
 		System.out.println("Précédent");
 	}
 
@@ -48,6 +51,7 @@ public class ChoixJoueur extends JFrame implements Global {
 			num_perso = 1;
 		}
 		affichePerso();
+		suivant.play();
 		System.out.println("Suivant");
 	}
 
@@ -60,6 +64,7 @@ public class ChoixJoueur extends JFrame implements Global {
 			txtfldPseudo.requestFocus();
 		}
 		else {
+			go.play();
 			controle.evenementChoixJoueur(num_perso, txtfldPseudo.getText());
 		}
 	}
@@ -178,5 +183,10 @@ public class ChoixJoueur extends JFrame implements Global {
 		this.controle = controle;
 		this.num_perso = 1;
 		affichePerso();
+		welcome = new Son(getClass().getResource(SONWELCOME));
+		precedent = new Son(getClass().getResource(SONPRECEDENT));
+		suivant = new Son(getClass().getResource(SONSUIVANT));
+		go = new Son(getClass().getResource(SONGO));
+		welcome.play();
 	}
 }

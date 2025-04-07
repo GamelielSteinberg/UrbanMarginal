@@ -16,6 +16,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import controleur.Controle;
 import javax.swing.JButton;
+import outils.son.Son;
 
 public class Arene extends JFrame implements Global {
 
@@ -27,6 +28,7 @@ public class Arene extends JFrame implements Global {
 	private JPanel jpnJeu;
 	private Controle controle;
 	private boolean isClient;
+	private Son[] tableauSons = new Son[TABLEAUSONSARENE.length];
 
 	/**
 	 * méthode permettant l'affichage des murs
@@ -203,6 +205,9 @@ public class Arene extends JFrame implements Global {
 					keyPressedDeplacement(e);
 				}
 			});
+			for (int i = 0; i < TABLEAUSONSARENE.length; i++) {
+				tableauSons[i] = new Son(getClass().getResource(TABLEAUSONSARENE[i]));
+			}
 		}
 
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -218,5 +223,9 @@ public class Arene extends JFrame implements Global {
 		} else {
 			action = -1;
 		}
+	}
+	
+	public void joueSon(Integer numSon) {
+		tableauSons[numSon].play();
 	}
 }
