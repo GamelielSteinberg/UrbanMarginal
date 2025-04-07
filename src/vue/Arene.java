@@ -15,6 +15,7 @@ import modele.Mur;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import controleur.Controle;
+import javax.swing.JButton;
 
 public class Arene extends JFrame implements Global {
 
@@ -208,13 +209,14 @@ public class Arene extends JFrame implements Global {
 	}
 
 	private void keyPressedDeplacement(KeyEvent e) {
-		int direction;
+		int action;
 		if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT
-				|| e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
-			direction = e.getKeyCode();
-			controle.evenementArene(direction);
+				|| e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN
+				|| e.getKeyCode() == KeyEvent.VK_SPACE) {
+			action = e.getKeyCode();
+			controle.evenementArene(action);
 		} else {
-			direction = -1;
+			action = -1;
 		}
 	}
 }

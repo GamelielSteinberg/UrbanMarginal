@@ -2,6 +2,7 @@ package modele;
 
 import javax.swing.JLabel;
 import java.awt.Rectangle;
+import java.util.Collection;
 
 /**
  * Informations communes � tous les objets (joueurs, murs, boules)
@@ -23,6 +24,20 @@ public abstract class Objet {
 	 */
 	protected JLabel jLabel;
 	/**
+	 * getter sur posX
+	 * @return
+	 */
+	public int getPosX() {
+		return this.posX;
+	}
+	/**
+	 * getter sur posY
+	 * @return
+	 */
+	public int getPosY() {
+		return this.posY;
+	}
+	/**
 	 * contr�le si l'objet actuel touche l'objet pass� en param�tre
 	 * @param objet contient l'objet � contr�ler
 	 * @return true si les 2 objets se touchent
@@ -37,5 +52,14 @@ public abstract class Objet {
 				this.posY < objet.posY + objet.jLabel.getHeight()) ;
 		}
 	}
-	
+	public Objet toucheCollectionObjets(Collection<Objet> lesObjets) {
+		for (Objet unObjet : lesObjets) {
+			if (!this.equals(unObjet)) {
+				if (toucheObjet(unObjet)) {
+					return unObjet;
+				}
+			}
+		}
+		return null;
+	}
 }

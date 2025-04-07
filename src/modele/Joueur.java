@@ -50,7 +50,13 @@ public class Joueur extends Objet implements Global {
 	 * label pour le texte sous le joueur
 	 */
 	private JLabel message;
-
+	/**
+	 * getter sur orientation
+	 * @return
+	 */
+	public int getOrientation() {
+		return orientation;
+	}
 	/**
 	 * getter sur pseudo
 	 * 
@@ -80,12 +86,14 @@ public class Joueur extends Objet implements Global {
 		System.out.println("joueur " + this.pseudo + " - num perso " + numPerso + " créé");
 		this.jLabel = new JLabel();
 		this.message = new JLabel();
+		this.boule = new Boule(this.jeuServeur);
 		message.setFont(new Font("Dialog", Font.BOLD, 8));
 		message.setForeground(Color.BLACK);
 		message.setHorizontalAlignment(SwingConstants.CENTER);
 		premierePosition(lesMurs, lesJoueurs);
 		jeuServeur.ajoutJLabelJeuArene(jLabel);
 		jeuServeur.ajoutJLabelJeuArene(message);
+		jeuServeur.ajoutJLabelJeuArene(boule.jLabel);
 		affiche("marche", etape);
 
 	}
@@ -93,28 +101,34 @@ public class Joueur extends Objet implements Global {
 	/**
 	 * Calcul de la première position aléatoire du joueur (sans chevaucher un autre
 	 * joueur ou un mur)
+	 * 
 	 * @param lesMurs
 	 * @param lesJoueurs
 	 */
 	private void premierePosition(ArrayList<Mur> lesMurs, Collection<Joueur> lesJoueurs) {
 		jLabel.setBounds(0, 0, LARGEURPERSO, HAUTEURPERSO);
+		Collection<Objet> objetLesJoueurs = new ArrayList<Objet>();
+		objetLesJoueurs.addAll(lesJoueurs);
+		Collection<Objet> objetLesMurs = new ArrayList<Objet>();
+		objetLesMurs.addAll(lesMurs);
 		do {
-			posX = (int) Math.round(Math.random() * (LARGEURARENE - LARGEURPERSO));
-			posY = (int) Math.round(Math.random() * (HAUTEURARENE - HAUTEURPERSO - HAUTEURMESSAGE));
-		} while (this.toucheJoueur(lesJoueurs) || this.toucheMur(lesMurs));
+			super.posX = (int) Math.round(Math.random() * (LARGEURARENE - LARGEURPERSO));
+			super.posY = (int) Math.round(Math.random() * (HAUTEURARENE - HAUTEURPERSO - HAUTEURMESSAGE));
+		} while (super.toucheCollectionObjets(objetLesJoueurs) != null || super.toucheCollectionObjets(objetLesMurs) != null);
 	}
 
 	/**
 	 * Affiche le personnage et son message
+	 * 
 	 * @param etat
 	 * @param etape
 	 */
 	public void affiche(String etat, int etape) {
 		ImageIcon imagePerso = new ImageIcon(
-				getClass().getResource(CHEMINPERSOS + numPerso + "marche" + etape + "d" + orientation + ".gif"));
+				getClass().getResource(CHEMINPERSOS + numPerso + etat + etape + "d" + orientation + ".gif"));
 		int largeur = imagePerso.getIconWidth();
 		int hauteur = imagePerso.getIconHeight();
-		jLabel.setBounds(posX, posY, largeur, hauteur);// posX + largeur, posY + hauteur);
+		jLabel.setBounds(posX, posY, largeur, hauteur);
 		jLabel.setIcon(imagePerso);
 		message.setBounds(posX - 10, posY + hauteur + 1, largeur + 20, 8);
 		message.setText(pseudo + ": " + vie);
@@ -123,39 +137,46 @@ public class Joueur extends Objet implements Global {
 
 	/**
 	 * Gère une action reçue et qu'il faut afficher (déplacement, tire de boule...)
-	 * @param mouvement
+	 * 
+	 * @param action
 	 * @param lesJoueurs
 	 * @param lesMurs
 	 */
-	public void action(int mouvement, Collection<Joueur> lesJoueurs, ArrayList<Mur> lesMurs) {
-		switch (mouvement) {
-		case (KeyEvent.VK_LEFT):
-			this.posX -= PAS;
-			if (isInvalid(lesJoueurs, lesMurs)) {
-				this.posX += PAS;
-			}
-			break;
-		case (KeyEvent.VK_RIGHT):
-			this.posX += PAS;
-			if (isInvalid(lesJoueurs, lesMurs)) {
+	public void action(int action, Collection<Joueur> lesJoueurs, ArrayList<Mur> lesMurs) {
+		if (action != KeyEvent.VK_SPACE) {
+			switch (action) {
+			case (KeyEvent.VK_LEFT):
 				this.posX -= PAS;
-			}
-			break;
-		case (KeyEvent.VK_UP):
-			this.posY -= PAS;
-			if (isInvalid(lesJoueurs, lesMurs)) {
-				this.posY += PAS;
-			}
-			break;
-		case (KeyEvent.VK_DOWN):
-			this.posY += PAS;
-			if (isInvalid(lesJoueurs, lesMurs)) {
+				if (isInvalid(lesJoueurs, lesMurs)) {
+					this.posX += PAS;
+				}
+				break;
+			case (KeyEvent.VK_RIGHT):
+				this.posX += PAS;
+				if (isInvalid(lesJoueurs, lesMurs)) {
+					this.posX -= PAS;
+				}
+				break;
+			case (KeyEvent.VK_UP):
 				this.posY -= PAS;
+				if (isInvalid(lesJoueurs, lesMurs)) {
+					this.posY += PAS;
+				}
+				break;
+			case (KeyEvent.VK_DOWN):
+				this.posY += PAS;
+				if (isInvalid(lesJoueurs, lesMurs)) {
+					this.posY -= PAS;
+				}
+				break;
 			}
-			break;
+			deplace(action);
+			affiche(MARCHE, etape);
+		} else {
+			if (!this.boule.jLabel.isVisible()) {
+				this.boule.tireBoule(this, lesMurs);
+			}
 		}
-		deplace(mouvement);
-		affiche("marche", etape);
 	}
 
 	/**
@@ -173,63 +194,43 @@ public class Joueur extends Objet implements Global {
 	}
 
 	private boolean isInvalid(Collection<Joueur> lesJoueurs, ArrayList<Mur> lesMurs) {
-		if (toucheJoueur(lesJoueurs) || toucheMur(lesMurs) || this.posX < 0 || this.posY < 0
+		Collection<Objet> objetLesJoueurs = new ArrayList<Objet>();
+		Collection<Objet> objetLesMurs = new ArrayList<Objet>();
+		objetLesJoueurs.addAll(lesJoueurs);
+		objetLesMurs.addAll(lesMurs);
+		if (super.toucheCollectionObjets(objetLesJoueurs) != null || super.toucheCollectionObjets(objetLesMurs) != null || this.posX < 0 || this.posY < 0
 				|| (this.posX + this.jLabel.getWidth()) > LARGEURARENE
 				|| (this.posY + this.jLabel.getHeight() > HAUTEURARENE)) {
 			return true;
 		}
 		return false;
 	}
-
-	/**
-	 * Contrôle si le joueur touche un des autres joueurs
-	 * 
-	 * @return true si deux joueurs se touchent
-	 */
-	private Boolean toucheJoueur(Collection<Joueur> lesJoueurs) {
-		for (Joueur unJoueur : lesJoueurs) {
-			if (!this.equals(unJoueur)) {
-				if (super.toucheObjet(unJoueur)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
 	/**
 	 * Gain de points de vie après avoir touché un joueur
 	 */
 	public void gainVie() {
+		vie += GAIN;
 	}
 
 	/**
 	 * Perte de points de vie après avoir été touché
 	 */
 	public void perteVie() {
-	}
-
-	/**
-	 * Contrôle si le joueur touche un des murs
-	 * 
-	 * @return true si un joueur touche un mur
-	 */
-	private Boolean toucheMur(ArrayList<Mur> lesMurs) {
-		for (Mur unMur : lesMurs) {
-			if (super.toucheObjet(unMur)) {
-				return true;
-			}
+		vie -= PERTE;
+		if (vie < 0) {
+			vie = 0;
 		}
-		return false;
 	}
-
 	/**
 	 * vrai si la vie est à 0
 	 * 
 	 * @return true si vie = 0
 	 */
 	public Boolean estMort() {
-		return null;
+		if (vie > 0) {
+			return false;
+		}
+		return true;
 	}
 
 	/**

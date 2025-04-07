@@ -6,6 +6,7 @@ import controleur.Controle;
 import controleur.Global;
 import outils.connexion.*;
 import javax.swing.JLabel;
+import java.util.Collection;
 
 /**
  * Gestion du jeu côté serveur
@@ -21,6 +22,13 @@ public class JeuServeur extends Jeu implements Global {
 	 * Dictionnaire de joueurs et leur connexion
 	 */
 	private Hashtable<Connection, Joueur> lesJoueurs = new Hashtable<Connection, Joueur>();
+	/**
+	 * getter sur la collection de joueurs (sans les connections)
+	 * @return
+	 */
+	public Collection<Joueur> getCollectionJoueur() {
+		return this.lesJoueurs.values();
+	}
 	/**
 	 * Constructeur
 	 */

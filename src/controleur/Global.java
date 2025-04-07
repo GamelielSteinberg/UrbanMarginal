@@ -35,6 +35,10 @@ public interface Global {
 	 */
 	public static final String CHEMINPERSOS = "/personnages/perso";
 	/**
+	 * chemin vers l'image de la boule
+	 */
+	public static final String CHEMINBOULE = "/boules/boule.gif";
+	/**
 	 * séparateur
 	 */
 	public static final String SEPARATEUR = "~";
@@ -120,10 +124,18 @@ public interface Global {
 	 * largeur du personnage
 	 */
 	int LARGEURPERSO = 39;
+	int LARGEURBOULE = 17;
+	int HAUTEURBOULE = 17;
 	/**
 	 * hauteur du message
 	 */
 	int HAUTEURMESSAGE = 8;
 	int LARGEURARENE = 800;
 	int HAUTEURARENE = 600;
+	/**
+	 * états possibles d'un joueur
+	 */
+	String MARCHE = "marche";
+	String TOUCHE = "touche";
+	String MORT = "mort";
 }
