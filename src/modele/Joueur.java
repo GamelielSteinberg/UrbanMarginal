@@ -50,13 +50,16 @@ public class Joueur extends Objet implements Global {
 	 * label pour le texte sous le joueur
 	 */
 	private JLabel message;
+
 	/**
 	 * getter sur orientation
+	 * 
 	 * @return
 	 */
 	public int getOrientation() {
 		return orientation;
 	}
+
 	/**
 	 * getter sur pseudo
 	 * 
@@ -114,7 +117,8 @@ public class Joueur extends Objet implements Global {
 		do {
 			super.posX = (int) Math.round(Math.random() * (LARGEURARENE - LARGEURPERSO));
 			super.posY = (int) Math.round(Math.random() * (HAUTEURARENE - HAUTEURPERSO - HAUTEURMESSAGE));
-		} while (super.toucheCollectionObjets(objetLesJoueurs) != null || super.toucheCollectionObjets(objetLesMurs) != null);
+		} while (super.toucheCollectionObjets(objetLesJoueurs) != null
+				|| super.toucheCollectionObjets(objetLesMurs) != null);
 	}
 
 	/**
@@ -143,38 +147,40 @@ public class Joueur extends Objet implements Global {
 	 * @param lesMurs
 	 */
 	public void action(int action, Collection<Joueur> lesJoueurs, ArrayList<Mur> lesMurs) {
-		if (action != KeyEvent.VK_SPACE) {
-			switch (action) {
-			case (KeyEvent.VK_LEFT):
-				this.posX -= PAS;
-				if (isInvalid(lesJoueurs, lesMurs)) {
-					this.posX += PAS;
-				}
-				break;
-			case (KeyEvent.VK_RIGHT):
-				this.posX += PAS;
-				if (isInvalid(lesJoueurs, lesMurs)) {
+		if (!estMort()) {
+			if (action != KeyEvent.VK_SPACE) {
+				switch (action) {
+				case (KeyEvent.VK_LEFT):
 					this.posX -= PAS;
-				}
-				break;
-			case (KeyEvent.VK_UP):
-				this.posY -= PAS;
-				if (isInvalid(lesJoueurs, lesMurs)) {
-					this.posY += PAS;
-				}
-				break;
-			case (KeyEvent.VK_DOWN):
-				this.posY += PAS;
-				if (isInvalid(lesJoueurs, lesMurs)) {
+					if (isInvalid(lesJoueurs, lesMurs)) {
+						this.posX += PAS;
+					}
+					break;
+				case (KeyEvent.VK_RIGHT):
+					this.posX += PAS;
+					if (isInvalid(lesJoueurs, lesMurs)) {
+						this.posX -= PAS;
+					}
+					break;
+				case (KeyEvent.VK_UP):
 					this.posY -= PAS;
+					if (isInvalid(lesJoueurs, lesMurs)) {
+						this.posY += PAS;
+					}
+					break;
+				case (KeyEvent.VK_DOWN):
+					this.posY += PAS;
+					if (isInvalid(lesJoueurs, lesMurs)) {
+						this.posY -= PAS;
+					}
+					break;
 				}
-				break;
-			}
-			deplace(action);
-			affiche(MARCHE, etape);
-		} else {
-			if (!this.boule.jLabel.isVisible()) {
-				this.boule.tireBoule(this, lesMurs);
+				deplace(action);
+				affiche(MARCHE, etape);
+			} else {
+				if (!this.boule.jLabel.isVisible()) {
+					this.boule.tireBoule(this, lesMurs);
+				}
 			}
 		}
 	}
@@ -198,18 +204,20 @@ public class Joueur extends Objet implements Global {
 		Collection<Objet> objetLesMurs = new ArrayList<Objet>();
 		objetLesJoueurs.addAll(lesJoueurs);
 		objetLesMurs.addAll(lesMurs);
-		if (super.toucheCollectionObjets(objetLesJoueurs) != null || super.toucheCollectionObjets(objetLesMurs) != null || this.posX < 0 || this.posY < 0
-				|| (this.posX + this.jLabel.getWidth()) > LARGEURARENE
+		if (super.toucheCollectionObjets(objetLesJoueurs) != null || super.toucheCollectionObjets(objetLesMurs) != null
+				|| this.posX < 0 || this.posY < 0 || (this.posX + this.jLabel.getWidth()) > LARGEURARENE
 				|| (this.posY + this.jLabel.getHeight() > HAUTEURARENE)) {
 			return true;
 		}
 		return false;
 	}
+
 	/**
 	 * Gain de points de vie après avoir touché un joueur
 	 */
 	public void gainVie() {
 		vie += GAIN;
+		affiche(MARCHE, etape);
 	}
 
 	/**
@@ -219,8 +227,10 @@ public class Joueur extends Objet implements Global {
 		vie -= PERTE;
 		if (vie < 0) {
 			vie = 0;
+			affiche(MARCHE, etape);
 		}
 	}
+
 	/**
 	 * vrai si la vie est à 0
 	 * 
@@ -237,6 +247,12 @@ public class Joueur extends Objet implements Global {
 	 * Le joueur se déconnecte et disparait
 	 */
 	public void departJoueur() {
+		if (super.jLabel != null) {
+			super.jLabel.setVisible(false);
+			this.message.setVisible(false);
+			this.boule.jLabel.setVisible(false);
+			jeuServeur.envoiJeuATous();
+		}
 	}
 
 }

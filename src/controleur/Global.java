@@ -65,7 +65,7 @@ public interface Global {
 	/**
 	 * message pour l'ordre de déconnexion
 	 */
-	public static final String DECONNEXION = "déconnexion";
+	public static final String DECONNEXION = "deconnexion";
 	/**
 	 * message pour l'ordre d'ajout d'un mur
 	 */

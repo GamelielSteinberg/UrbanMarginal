@@ -62,4 +62,12 @@ public abstract class Objet {
 		}
 		return null;
 	}
+	/**
+	 * setter sur posX et posY pour le test unitaire
+	 * @param posX
+	 */
+	public void setPos(int posX, int posY) {
+		this.posX = posX;
+		this.posY = posY;
+	}
 }
